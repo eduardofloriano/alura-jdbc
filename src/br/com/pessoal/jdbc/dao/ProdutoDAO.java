@@ -1,11 +1,13 @@
 package br.com.pessoal.jdbc.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import br.com.pessoal.jdbc.db.Database;
+import br.com.pessoal.jdbc.vo.ProdutoVO;
 
 public class ProdutoDAO {
 
@@ -30,11 +32,16 @@ public class ProdutoDAO {
 		
 	}//End listaProdutos
 
-	public void inserirProduto() throws SQLException {
+	public void inserirProduto(ProdutoVO produto) throws SQLException {
 
 		Connection con = getConnection();
-		Statement statement = con.createStatement();
-		boolean resultado = statement.execute("insert into produto (nome, descricao) values ('Notebook', 'Notebook i5')", Statement.RETURN_GENERATED_KEYS);
+
+		String sql = "insert into produto (nome, descricao) values (?, ?)";
+		PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		statement.setString(1, produto.getNome());
+		statement.setString(2, produto.getDescricao());
+		
+		boolean resultado = statement.execute();
 		ResultSet rs = statement.getGeneratedKeys();
 		
 		while(rs.next()){

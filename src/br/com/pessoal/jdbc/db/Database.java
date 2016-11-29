@@ -12,7 +12,7 @@ public class Database {
 	public static Connection getConnection() throws SQLException{		
 		
 		if(connection == null || connection.isClosed()){
-			connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/loja-virtual", "SA", "");
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost/alura", "postgres", "postgres");
 		}
 		
 		return connection;
