@@ -6,10 +6,13 @@ public class ProdutoVO {
 	private String nome;
 	private String descricao;
 	
+	public ProdutoVO(){
+		
+	}
+	
 	public ProdutoVO(String nome, String descricao){
 		this.nome = nome;
-		this.descricao = descricao;
-		
+		this.descricao = descricao;		
 	}
 	
 	public int getId() {

@@ -1,6 +1,7 @@
 package br.com.pessoal.jdbc.main;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import br.com.pessoal.jdbc.dao.ProdutoDAO;
 import br.com.pessoal.jdbc.vo.ProdutoVO;
@@ -11,18 +12,23 @@ public class Execute {
 	
 	public static void main(String[] args) throws SQLException {
 		
-		inserir();
-		listar();
-		
+			listar();
+	
 	}
 	
 	
 	private static void listar() throws SQLException{		
-		dao.listaProdutos();
+		List<ProdutoVO> produtos = dao.listaProdutos();
+		
+		for(ProdutoVO produto : produtos){
+			System.out.println(produto.getId());
+			System.out.println(produto.getNome());
+			System.out.println(produto.getDescricao());
+		}
 	}
 	
-	private static void inserir() throws SQLException{		
-		dao.inserirProduto(new ProdutoVO("Notebook", "Notebook empresarial"));
+	private static void inserir(String nome, String descricao) throws SQLException{			
+		dao.inserirProduto(new ProdutoVO(nome, descricao));
 	}
 
 }
