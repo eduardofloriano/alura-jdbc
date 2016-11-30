@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.pessoal.jdbc.db.Database;
+import br.com.pessoal.jdbc.vo.CategoriaVO;
 import br.com.pessoal.jdbc.vo.ProdutoVO;
 
 public class ProdutoDAO {
@@ -25,24 +26,32 @@ public class ProdutoDAO {
 			
 			try(Statement statement = con.createStatement()){				
 				statement.execute("select * from produto");
-				try(ResultSet rs = statement.getResultSet()){
-					while (rs.next()) {
-						
-						ProdutoVO produto = new ProdutoVO();
-						produto.setId(rs.getInt("id"));
-						produto.setNome(rs.getString("nome"));
-						produto.setDescricao(rs.getString("descricao"));
-						
-						produtos.add(produto);						
-					}
-					
-				}				
+				extrairResultSet(statement, produtos);		
 			}
 		}		
 		
 		return produtos;
 		
 	}//End listaProdutos
+	
+	public List<ProdutoVO> listaProdutosPorCategoria(CategoriaVO categoria) throws SQLException {
+
+		List<ProdutoVO> produtos = new ArrayList<ProdutoVO>();
+		
+		try(Connection con = getConnection()){
+			String sql = "select produto.id as produto_id, produto.nome as produto_nome, produto.descricao as produto_descricao, produto.categoria as produto_categoria, categoria.id as categoria_id, categoria.nome as categoria_nome from produto produto, categoria categoria where categoria.id = produto.id and produto.categoria = ? ";
+			try(PreparedStatement statement = con.prepareStatement(sql)){
+				statement.setInt(1, categoria.getId());
+				statement.execute();
+				extrairResultSet(statement, produtos);		
+			}
+		}		
+		
+		return produtos;
+		
+	}//End listaProdutos
+	
+	
 
 	public void inserirProduto(ProdutoVO produto) throws SQLException {
 
@@ -81,6 +90,22 @@ public class ProdutoDAO {
 	}//End deletarProduto
 	
 	
+	private void extrairResultSet(Statement st, List<ProdutoVO> produtos) throws SQLException{
+		
+		try(ResultSet rs = st.getResultSet()){
+			while (rs.next()) {
+				
+				ProdutoVO produto = new ProdutoVO();
+				produto.setId(rs.getInt("id"));
+				produto.setNome(rs.getString("nome"));
+				produto.setDescricao(rs.getString("descricao"));
+				
+				produtos.add(produto);						
+			}
+			
+		}		
+		
+	}
 	
 	public void closeResource(Connection con, Statement st, ResultSet rs) throws SQLException {
 		if (!(con == null)) {
